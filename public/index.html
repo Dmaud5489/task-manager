@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Task Manager</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body id = 'body'>
+
+		<div id = "mainPage">
+			<h1 id = "taskPlanningHeader"></h1>
+			<section id = "taskSection">
+				<ul>
+					<li id = "elem1"></li>
+				</ul>
+			</section>
+			<button type = "button" id = "addTask" onClick = "toTaskPage()">Add To Tasks</button>
+			<h3 id = "progressText"></h3>
+			<div id = "progressBarOutline">
+				<div id = "progressBarFill"></div>
+			</div>
+		</div>
+
+		<div id = "addTaskPage">
+			<h1 id = "addNewTaskHeader">Add New Task</h1>
+			<h3 id = "titleCaption">Enter the Title of the task: </h3>
+			<textarea id = "titleText" name = "titleText" rows = "4" cols = "50"></textarea>
+			<h3 id = "descriptionCaption">Enter the Description: </h3>
+			<textarea id = "descriptionText" name = "descriptionText" rows = "4" cols = "50"></textarea>
+			<button type = "button" id = "submitTask" onClick = "createTask()">Submit</button>
+		</div>
+
+		<!-- <h1>ROT - 13</h1>
+		<textarea id = "theInput" rows = "10" cols = "30" accept-charset = "UTF-8"></textarea>
+		<br><br>
+		<button type = "button" id = "encrypt" onClick = 'encrypt()'>Click Here to Encrypt</button>
+		<p id = "resultOfEncryption"></p> -->
+	</body>
+
+	<script type="text/javascript">
+		var theDate = determineDate();
+		document.getElementById("taskPlanningHeader").innerHTML = "Task Planner - " + theDate;
+
+		determineProgress();
+
+		function determineDate() {
+			const curDate = new Date();
+			var day = curDate.getDate();
+			var weekDay = curDate.getDay();
+			var month = curDate.getMonth();
+			var weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+			var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+			weekDay = weekDays[weekDay];
+			month = months[month];
+			return weekDay + ", " + month + " " + day;
+		}
+
+		function determineProgress() {
+			var element = document.getElementById("progressText");
+			var percent = 20;
+			element.innerHTML = "Progress: " + percent + "%";
+		}
+
+		function toTaskPage() {
+			var element = document.getElementById("mainPage");
+			element.style.display = "none";
+			element = document.getElementById("addTaskPage");
+			element.style.display = "block";
+		}
+
+		function createTask() {
+			var xhr = new XMLHttpRequest();
+			var title = document.getElementById("titleText").value;
+			var description = document.getElementById("descriptionText").value;
+			if (title.length == 0) {
+				return;
+			}
+			xhr.open("GET", "http://localhost:3000/addTaskToTable?theTitle=" + title + "&theDesc=" + description, true);
+			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+			xhr.onreadystatechange = function() {
+				if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
+					var ele = document.getElementById("elem1");
+					ele.innerHTML = this.responseText;
+				}
+			}
+
+			xhr.send();
+
+			var element = document.getElementById("addTaskPage");
+			element.style.display = "none";
+			element = document.getElementById("mainPage");
+			element.style.display = "block";
+		}
+		/*function encrypt() {
+			var xhr = new XMLHttpRequest();
+			var text = document.getElementById("theInput").value;
+
+			xhr.open("GET", "http://localhost:3000/encryption?theText=" + text, true);
+			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+			xhr.onreadystatechange = function() {
+				if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
+					var ele = document.getElementById("resultOfEncryption");
+					ele.innerHTML = this.responseText;
+				}
+			}
+
+			xhr.send();
+		}*/
+	</script>
+</html>
